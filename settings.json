@@ -1,0 +1,32 @@
+{
+    "training": {
+        "model": "AttentionUNetMSE50",
+        "epochs": 50,
+        "batch_size": 32,
+        "learning_rate": 0.001,
+        "train_size": 80,
+        "test_size": 10,
+        "val_size": 10
+    },
+    "model_options": [
+        "UNetLikeMSE50",
+        "AttentionUNetMSE50",
+        "AttentionUNetPerceptual20",
+        "AttentionUNetPerceptual50",
+        "ALL"
+    ],
+    "paths": {
+        "dataset": "Dataset",
+        "models": "models",
+        "predictions": "predictions",
+        "original_images": "Dataset/original_images",
+        "masks": "Dataset/inpainting_annotations/inpaint_mask",
+        "ground_truth": "Dataset/inpainting_img/img"
+    },
+    "image": {
+        "size": [
+            256,
+            256
+        ]
+    }
+}
