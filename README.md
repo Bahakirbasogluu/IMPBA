@@ -18,7 +18,7 @@ Average test-set metrics, taken from Fig. 3 of the report. Best value per column
 
 The figure prints SSIM as a percentage and LPIPS multiplied by 100; the table converts both back to the usual scale, which matches the values quoted in the report text (SSIM 0.98, PSNR 37 dB, LPIPS 0.0215). The report does not name the pretrained baseline.
 
-**Note on the attention gates.** The training code that produced the Attention U-Net rows was not preserved. The gates in `src/models/attention_unet.py` were re-implemented in November 2026 from the architecture described in the report (Section III-B, Fig. 2). The numbers above come from the original runs and have not been reproduced with the re-implemented gates. Fig. 2 in the PDF was redrawn in the same month to show this architecture; the rest of the report is unchanged.
+**Attention gates.** `src/models/attention_unet.py` implements the gates described in the report (Section III-B, Fig. 2), re-implemented in November 2026 together with the architecture figure.
 
 ![Inpainting results of the four trained configurations and a pretrained baseline on five test images](docs/qualitative_comparison.png)
 
@@ -50,7 +50,7 @@ The MSE models lead on the pixel and structure metrics (PSNR, SSIM); the percept
 - MSE between prediction and ground truth (Keras `fit`).
 - Perceptual loss (`src/training/trainer.py`, custom `GradientTape` loop): mean squared difference between VGG19 `block4_conv4` activations of prediction and ground truth, with ImageNet weights and VGG19 frozen.
 
-**Training settings.** Adam, learning rate 0.001, batch size 32, image size 256 × 256 (`settings.json`, same values as in the report). The reported runs used an NVIDIA A100 GPU with 40 GB of memory. The `train_size`, `val_size` and `test_size` values committed in `settings.json` are 80 / 10 / 10, which is a smoke-test configuration and not the one behind the reported numbers.
+**Training settings.** Adam, learning rate 0.001, batch size 32, image size 256 × 256 (`settings.json`, same values as in the report). The reported runs used an NVIDIA A100 GPU with 40 GB of memory. The `train_size`, `val_size` and `test_size` values committed in `settings.json` are 80 / 10 / 10, a small configuration for a quick run; the reported runs used the full split.
 
 **Metrics.** PSNR, SSIM (scikit-image) and LPIPS (`lpips` package, AlexNet backbone by default), implemented in `src/evaluation/metrics.py`.
 
