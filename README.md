@@ -18,6 +18,8 @@ Average test-set metrics, taken from Fig. 3 of the report. Best value per column
 
 The figure prints SSIM as a percentage and LPIPS multiplied by 100; the table converts both back to the usual scale, which matches the values quoted in the report text (SSIM 0.98, PSNR 37 dB, LPIPS 0.0215). The report does not name the pretrained baseline.
 
+**Note on the attention gates.** The training code that produced the Attention U-Net rows was not preserved. The gates in `src/models/attention_unet.py` were re-implemented in November 2026 from the architecture described in the report (Section III-B, Fig. 2). The numbers above come from the original runs and have not been reproduced with the re-implemented gates.
+
 ![Inpainting results of the four trained configurations and a pretrained baseline on five test images](docs/qualitative_comparison.png)
 
 *Fig. 3 of the report. Columns, left to right: input, mask, Attention U-Net + MSE (50 epochs), Attention U-Net + perceptual (20 epochs), Attention U-Net + perceptual (50 epochs), U-Net-like + MSE (50 epochs), pretrained baseline, ground truth. Per-image PSNR / SSIM / LPIPS are printed under each output; the right-hand column lists the averages used in the table above.*
@@ -37,7 +39,7 @@ The MSE models lead on the pixel and structure metrics (PSNR, SSIM); the percept
 **Architectures.**
 
 - `src/models/unet_like.py`: five encoder blocks (two 3 × 3 convolutions and 2 × 2 max pooling each; 64, 128, 256, 512, 1024 filters), four decoder blocks with transposed convolutions and skip concatenation, a final upsampling step and a 3 × 3 sigmoid output layer.
-- `src/models/attention_unet.py`: four encoder levels (64 to 512 filters), a 1024-filter bottleneck, dropout 0.5 on the deepest encoder level and the bottleneck, transposed-convolution decoder, 1 × 1 sigmoid output. The report describes attention blocks on the skip connections; the class in this repository concatenates the encoder features directly and does not contain those blocks.
+- `src/models/attention_unet.py`: four encoder levels (64 to 512 filters), a 1024-filter bottleneck, dropout 0.5 on the deepest encoder level and the bottleneck, transposed-convolution decoder, 1 × 1 sigmoid output. Each skip connection passes through an additive attention gate (Oktay et al., 2018): the encoder features and the upsampled decoder features are projected with 1 × 1 convolutions, summed, and reduced through ReLU, a 1 × 1 convolution and a sigmoid to a single-channel map that scales the encoder features before concatenation.
 
 **Losses.**
 
