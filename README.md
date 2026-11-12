@@ -18,7 +18,7 @@ Average test-set metrics, taken from Fig. 3 of the report. Best value per column
 
 The figure prints SSIM as a percentage and LPIPS multiplied by 100; the table converts both back to the usual scale, which matches the values quoted in the report text (SSIM 0.98, PSNR 37 dB, LPIPS 0.0215). The report does not name the pretrained baseline.
 
-**Note on the attention gates.** The training code that produced the Attention U-Net rows was not preserved. The gates in `src/models/attention_unet.py` were re-implemented in November 2026 from the architecture described in the report (Section III-B, Fig. 2). The numbers above come from the original runs and have not been reproduced with the re-implemented gates.
+**Note on the attention gates.** The training code that produced the Attention U-Net rows was not preserved. The gates in `src/models/attention_unet.py` were re-implemented in November 2026 from the architecture described in the report (Section III-B, Fig. 2). The numbers above come from the original runs and have not been reproduced with the re-implemented gates. Fig. 2 in the PDF was redrawn in the same month to show this architecture; the rest of the report is unchanged.
 
 ![Inpainting results of the four trained configurations and a pretrained baseline on five test images](docs/qualitative_comparison.png)
 
@@ -40,6 +40,10 @@ The MSE models lead on the pixel and structure metrics (PSNR, SSIM); the percept
 
 - `src/models/unet_like.py`: five encoder blocks (two 3 × 3 convolutions and 2 × 2 max pooling each; 64, 128, 256, 512, 1024 filters), four decoder blocks with transposed convolutions and skip concatenation, a final upsampling step and a 3 × 3 sigmoid output layer.
 - `src/models/attention_unet.py`: four encoder levels (64 to 512 filters), a 1024-filter bottleneck, dropout 0.5 on the deepest encoder level and the bottleneck, transposed-convolution decoder, 1 × 1 sigmoid output. Each skip connection passes through an additive attention gate (Oktay et al., 2018): the encoder features and the upsampled decoder features are projected with 1 × 1 convolutions, summed, and reduced through ReLU, a 1 × 1 convolution and a sigmoid to a single-channel map that scales the encoder features before concatenation.
+
+![Architecture of the Attention U-Net: four encoder levels, a bottleneck and a decoder whose skip connections pass through attention gates](docs/architecture.png)
+
+*Fig. 2 of the report: the Attention U-Net and its attention gate.*
 
 **Losses.**
 
